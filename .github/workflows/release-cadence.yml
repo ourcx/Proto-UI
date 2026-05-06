@@ -33,12 +33,22 @@ jobs:
           set -euo pipefail
           LAST_TAG=$(git describe --tags --match 'release/*' --abbrev=0 2>/dev/null || true)
           echo "last_tag=${LAST_TAG}"
+          CAP=200
           if [[ -z "${LAST_TAG}" ]]; then
             RANGE_LABEL="(no previous release/* tag — listing recent packages/ history)"
-            COMMITS=$(git log --oneline -- packages/ | head -200)
+            COMMITS_RAW=$(git log --oneline -- packages/)
           else
             RANGE_LABEL="${LAST_TAG}..HEAD"
-            COMMITS=$(git log "${LAST_TAG}..HEAD" --oneline -- packages/)
+            COMMITS_RAW=$(git log "${LAST_TAG}..HEAD" --oneline -- packages/)
+          fi
+
+          TOTAL_COUNT=$(printf '%s\n' "${COMMITS_RAW}" | grep -c . || true)
+          if [[ "${TOTAL_COUNT}" -gt "${CAP}" ]]; then
+            COMMITS_HEAD=$(printf '%s\n' "${COMMITS_RAW}" | head -n "${CAP}")
+            TRUNC_NOTE="[…truncated: showing ${CAP} of ${TOTAL_COUNT} commits — run \`git log\` locally for the full list]"
+            COMMITS="${COMMITS_HEAD}"$'\n'"${TRUNC_NOTE}"
+          else
+            COMMITS="${COMMITS_RAW}"
           fi
 
           if [[ -z "${COMMITS}" ]]; then
@@ -51,10 +61,13 @@ jobs:
           echo "last_tag=${LAST_TAG}" >> "$GITHUB_OUTPUT"
           echo "range_label=${RANGE_LABEL}" >> "$GITHUB_OUTPUT"
 
+          # Randomize the heredoc delimiter so a commit subject equal to a
+          # static sentinel (e.g. "EOF") cannot corrupt the multi-line output.
+          DELIM="ghadelim_$(openssl rand -hex 8)"
           {
-            echo "commits<<EOF"
+            echo "commits<<${DELIM}"
             echo "${COMMITS}"
-            echo "EOF"
+            echo "${DELIM}"
           } >> "$GITHUB_OUTPUT"
 
       - name: Open release readiness issue

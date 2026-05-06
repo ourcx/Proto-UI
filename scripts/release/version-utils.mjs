@@ -50,10 +50,15 @@ export function findProtoPackages(rootDir) {
   }
 
   return manifestPaths
-    .map((manifestPath) => ({
-      manifestPath,
-      manifest: JSON.parse(readFileSync(manifestPath, 'utf8')),
-    }))
+    .map((manifestPath) => {
+      let manifest;
+      try {
+        manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+      } catch (err) {
+        throw new Error(`Failed to parse ${manifestPath}: ${err.message}`);
+      }
+      return { manifestPath, manifest };
+    })
     .filter(
       (entry) =>
         typeof entry.manifest.name === 'string' && entry.manifest.name.startsWith('@proto.ui/')

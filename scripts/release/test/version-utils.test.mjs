@@ -76,3 +76,30 @@ test('findProtoPackages discovers nested @proto.ui packages and skips others', (
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test('findProtoPackages reports the manifest path when JSON is malformed', () => {
+  const root = makeFixture({
+    version: '0.1.0',
+    packages: [{ relPath: 'cli', name: '@proto.ui/cli', version: '0.0.4' }],
+  });
+  const brokenDir = join(root, 'packages', 'broken');
+  mkdirSync(brokenDir, { recursive: true });
+  const brokenManifest = join(brokenDir, 'package.json');
+  writeFileSync(brokenManifest, 'not json');
+  try {
+    assert.throws(
+      () => findProtoPackages(root),
+      (err) => {
+        assert.ok(err instanceof Error);
+        assert.match(err.message, /Failed to parse/);
+        assert.ok(
+          err.message.includes(brokenManifest),
+          `error message should include ${brokenManifest}, got: ${err.message}`
+        );
+        return true;
+      }
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { AdaptToWebComponent, setElementProps } from '@proto.ui/adapter-web-component';
 import { checkboxRoot, checkboxIndicator } from '../src/checkbox';
 
-AdaptToWebComponent(checkboxRoot as any);
-AdaptToWebComponent(checkboxIndicator as any);
+AdaptToWebComponent(checkboxRoot as any, { registerAs: 'wc-base-checkbox-root' });
+AdaptToWebComponent(checkboxIndicator as any, { registerAs: 'wc-base-checkbox-indicator' });
 
 describe('prototypes/base: checkbox', () => {
   it('checkbox-root reuses toggle semantics for checked state and checkedChange', async () => {
-    const root = document.createElement('base-checkbox-root') as any;
+    const root = document.createElement('wc-base-checkbox-root') as any;
     document.body.appendChild(root);
 
     await Promise.resolve();
@@ -24,7 +24,7 @@ describe('prototypes/base: checkbox', () => {
   });
 
   it('checkbox-root supports indeterminate state', async () => {
-    const root = document.createElement('base-checkbox-root') as any;
+    const root = document.createElement('wc-base-checkbox-root') as any;
     setElementProps(root, { defaultIndeterminate: true });
     document.body.appendChild(root);
 
@@ -40,7 +40,7 @@ describe('prototypes/base: checkbox', () => {
   });
 
   it('checkbox-root clears indeterminate on press.commit', async () => {
-    const root = document.createElement('base-checkbox-root') as any;
+    const root = document.createElement('wc-base-checkbox-root') as any;
     setElementProps(root, { defaultIndeterminate: true });
     document.body.appendChild(root);
 
@@ -58,8 +58,8 @@ describe('prototypes/base: checkbox', () => {
   });
 
   it('checkbox-indicator reads root checked and indeterminate through anatomy', async () => {
-    const root = document.createElement('base-checkbox-root') as any;
-    const indicator = document.createElement('base-checkbox-indicator') as any;
+    const root = document.createElement('wc-base-checkbox-root') as any;
+    const indicator = document.createElement('wc-base-checkbox-indicator') as any;
     setElementProps(root, { defaultIndeterminate: true });
     root.appendChild(indicator);
     document.body.appendChild(root);
@@ -81,7 +81,7 @@ describe('prototypes/base: checkbox', () => {
   });
 
   it('disabled checkbox-root suppresses checked changes', async () => {
-    const root = document.createElement('base-checkbox-root') as any;
+    const root = document.createElement('wc-base-checkbox-root') as any;
     setElementProps(root, { disabled: true });
     document.body.appendChild(root);
 

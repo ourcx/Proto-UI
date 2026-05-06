@@ -16,3 +16,22 @@ Checkbox 基础原型在 Toggle 语义之上提供了 checked、unchecked、disa
     hasCode={true}
   />
 </div>
+
+## 结构
+
+Checkbox 通过 anatomy 系统拆分为两个部分：
+
+- **Root** (`base-checkbox-root`) — 管理 toggle 状态（`checked`、`checkedChange`）、disabled 以及 indeterminate。Root 扩展了 Toggle 语义，将 `indeterminate` 添加为自定义布尔状态。
+- **Indicator** (`base-checkbox-indicator`) — 通过 anatomy 运行时访问读取 root 的 `checked` 和 `indeterminate` 状态，并暴露给渲染层。它不独立管理状态。
+
+Root 和 Indicator 通过 `base-checkbox` anatomy 族关联，关系为 contains（root → indicator）。
+
+## Indeterminate 行为
+
+当 `indeterminate` 为 `true` 时，点击 checkbox 会：
+
+1. 将 `indeterminate` 清除为 `false`
+2. 发出 `checkedChange`，携带 `checked: true`
+3. 发出 `indeterminateChange`，携带 `indeterminate: false`
+
+如果你在外部通过 prop 控制 `indeterminate`，请监听 `indeterminateChange` 来同步你的状态。

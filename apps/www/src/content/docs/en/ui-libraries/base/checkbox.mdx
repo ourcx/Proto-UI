@@ -16,3 +16,22 @@ The Checkbox base prototype provides checked, unchecked, disabled, and indetermi
     hasCode={true}
   />
 </div>
+
+## Anatomy
+
+The Checkbox is split into two parts connected through the anatomy system:
+
+- **Root** (`base-checkbox-root`) — manages toggle state (`checked`, `checkedChange`), disabled, and indeterminate. The root extends Toggle semantics, adding `indeterminate` as a custom boolean state.
+- **Indicator** (`base-checkbox-indicator`) — reads the root's `checked` and `indeterminate` states through anatomy runtime access and exposes them for rendering. It does not manage state independently.
+
+The root and indicator are linked via the `base-checkbox` anatomy family, with a `contains` relation (root → indicator).
+
+## Indeterminate behavior
+
+When `indeterminate` is `true`, pressing the checkbox:
+
+1. Clears `indeterminate` to `false`
+2. Emits `checkedChange` with `checked: true`
+3. Emits `indeterminateChange` with `indeterminate: false`
+
+If you control the `indeterminate` prop externally, listen for `indeterminateChange` to sync your state.

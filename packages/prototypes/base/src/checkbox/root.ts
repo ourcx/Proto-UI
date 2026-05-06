@@ -49,6 +49,7 @@ function setupCheckboxRoot(def: DefHandle<CheckboxRootProps, CheckboxRootExposes
     if (indeterminate.get()) {
       indeterminate.set(false, 'reason: press.commit => clear indeterminate');
       run.event.emit('checkedChange', { checked: true });
+      run.event.emit('indeterminateChange', { indeterminate: false });
       return;
     }
   });

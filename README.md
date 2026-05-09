@@ -62,6 +62,18 @@ The architecture is stable enough to move from v0 to v1 without destructive rewr
 
 ---
 
+## Local development
+
+Use the pnpm version declared in `package.json`; it is aligned with `pnpm-lock.yaml` and CI.
+
+```sh
+corepack enable
+pnpm install --frozen-lockfile
+pnpm docs:dev
+```
+
+---
+
 ## Who should care
 
 - Component library authors

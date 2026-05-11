@@ -21,7 +21,8 @@ export async function runAddCommand(argv: string[]): Promise<void> {
     !isInteractiveDisabled(options) && process.stdin.isTTY && process.stdout.isTTY;
   const rootDir = options['root-dir'] as string | undefined;
 
-  let [hostInput, componentInput] = positionals;
+  let hostInput: string | undefined = positionals[0];
+  let componentInput: string | undefined = positionals[1];
   if (!hostInput && interactive) hostInput = (await promptForHost()) ?? undefined;
   if (!componentInput && interactive) componentInput = (await promptForComponent()) ?? undefined;
 
@@ -42,6 +43,11 @@ export async function runAddCommand(argv: string[]): Promise<void> {
   }
 
   const adapter = getAdapter(host);
+  if (!adapter) {
+    // unreachable: normalizeHost only returns ids drawn from ADAPTER_REGISTRY,
+    // so getAdapter on its result must succeed. defensive guard for TS strict.
+    throw new Error(`unsupported host "${host}"`);
+  }
   const { config, paths } = await loadCliConfig(cwd, rootDir);
   if (!config) {
     throw new Error(

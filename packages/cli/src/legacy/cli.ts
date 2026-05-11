@@ -1,3 +1,8 @@
+// @ts-nocheck
+// legacy shadcn-styles generator: ~950 lines of recursive ts.Node AST walking
+// retained verbatim from the original .mjs implementation. the new typed
+// surface (commands, services, registry) has real annotations; precise
+// ts.* narrowings across this entire file would be a separate, larger change.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';

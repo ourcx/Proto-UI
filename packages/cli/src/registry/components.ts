@@ -367,7 +367,8 @@ export const COMPONENT_REGISTRY: Record<string, ComponentEntry> = {
   ]),
 };
 
-export function getComponentEntry(componentId: string): ComponentEntry | null {
+export function getComponentEntry(componentId: string | undefined): ComponentEntry | null {
+  if (!componentId) return null;
   return COMPONENT_REGISTRY[componentId] ?? null;
 }
 

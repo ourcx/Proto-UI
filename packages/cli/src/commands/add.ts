@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { addComponentToConfig, loadCliConfig, saveCliConfig } from '../config/project-config.js';
 import { getAdapter, normalizeHost } from '../registry/adapters.js';
 import { getComponentEntry } from '../registry/components.js';
@@ -15,16 +14,16 @@ import { ensureRuntimePackages } from '../services/runtime-check.js';
 import { isInteractiveDisabled, parseArgv } from '../utils/args.js';
 import { relativeToCwd } from '../utils/fs.js';
 
-export async function runAddCommand(argv) {
+export async function runAddCommand(argv: string[]): Promise<void> {
   const { options, positionals } = parseArgv(argv);
   const cwd = process.cwd();
   const interactive =
     !isInteractiveDisabled(options) && process.stdin.isTTY && process.stdout.isTTY;
-  const rootDir = options['root-dir'];
+  const rootDir = options['root-dir'] as string | undefined;
 
   let [hostInput, componentInput] = positionals;
-  if (!hostInput && interactive) hostInput = await promptForHost();
-  if (!componentInput && interactive) componentInput = await promptForComponent();
+  if (!hostInput && interactive) hostInput = (await promptForHost()) ?? undefined;
+  if (!componentInput && interactive) componentInput = (await promptForComponent()) ?? undefined;
 
   const host = normalizeHost(hostInput);
   if (!host) {

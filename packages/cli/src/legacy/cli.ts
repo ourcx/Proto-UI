@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -557,9 +556,7 @@ function createsScope(node) {
 }
 
 function hasStatements(node) {
-  return (
-    ts.isSourceFile(node) || ts.isBlock(node) || ts.isModuleBlock(node) || ts.isCaseBlock(node)
-  );
+  return ts.isSourceFile(node) || ts.isBlock(node) || ts.isModuleBlock(node);
 }
 
 function registerDeclaration(decl, scope) {
@@ -685,6 +682,7 @@ function resolveSemanticBinding(node) {
     }
   }
 
+  if (!ts.isPropertyAccessExpression(node.expression)) return null;
   const kind = node.expression.name.text === 'fromInteraction' ? 'interaction' : 'accessibility';
   const firstArg = node.arguments[0];
   if (!firstArg || !ts.isStringLiteralLike(firstArg)) return null;

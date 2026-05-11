@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { runAddCommand } from './commands/add.js';
 import { printHelp, printCommandHelp } from './commands/help.js';
 import { runInitCommand } from './commands/init.js';
@@ -9,7 +8,7 @@ import {
 } from './services/legacy-styles.js';
 import { isHelpToken, parseArgv } from './utils/args.js';
 
-export async function run(argv) {
+export async function run(argv: string[]): Promise<void> {
   const { options, positionals } = parseArgv(argv);
   const [command, ...rest] = positionals;
 

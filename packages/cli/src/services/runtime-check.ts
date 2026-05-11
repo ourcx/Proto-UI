@@ -1,7 +1,15 @@
-// @ts-nocheck
-import { formatInstallCommand } from './package-manager.js';
+import { formatInstallCommand, type PackageManager } from './package-manager.js';
+import type { Adapter } from '../registry/adapters.js';
 
-export function ensureRuntimePackages({ adapter, projectPkg, packageManager }) {
+export function ensureRuntimePackages({
+  adapter,
+  projectPkg,
+  packageManager,
+}: {
+  adapter: Adapter;
+  projectPkg: Record<string, unknown> | null;
+  packageManager: PackageManager;
+}): void {
   const missing = adapter.runtimePackages.filter((pkg) => !hasProjectPackage(projectPkg, pkg));
 
   if (missing.length === 0) return;
@@ -20,16 +28,24 @@ export function ensureRuntimePackages({ adapter, projectPkg, packageManager }) {
   );
 }
 
-function hasProjectPackage(projectPkg, packageName) {
+function hasProjectPackage(
+  projectPkg: Record<string, unknown> | null,
+  packageName: string
+): boolean {
+  if (!projectPkg) return false;
+  const deps = projectPkg.dependencies as Record<string, unknown> | undefined;
+  const devDeps = projectPkg.devDependencies as Record<string, unknown> | undefined;
+  const peerDeps = projectPkg.peerDependencies as Record<string, unknown> | undefined;
+  const optDeps = projectPkg.optionalDependencies as Record<string, unknown> | undefined;
   return Boolean(
-    projectPkg?.dependencies?.[packageName] ||
-    projectPkg?.devDependencies?.[packageName] ||
-    projectPkg?.peerDependencies?.[packageName] ||
-    projectPkg?.optionalDependencies?.[packageName]
+    deps?.[packageName] ||
+    devDeps?.[packageName] ||
+    peerDeps?.[packageName] ||
+    optDeps?.[packageName]
   );
 }
 
-function runtimeInstallHint(adapterId, missing) {
+function runtimeInstallHint(adapterId: string, missing: string[]): string[] {
   if (adapterId === 'react' && missing.includes('react')) {
     return ['react', 'react-dom'];
   }

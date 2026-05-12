@@ -28,12 +28,12 @@ export type VueRuntime = VueRenderRuntime & {
   defineComponent: (opt: any) => any;
   h: (type: any, props?: any, children?: any) => any;
   Teleport?: any;
-  ref: <T>(v: T) => { value: T };
-  shallowRef: <T>(v: T) => { value: T };
-  watch: (src: unknown, cb: (...args: unknown[]) => void | Promise<void>, opt?: unknown) => void;
+  ref: <T>(v: T) => { value: any };
+  shallowRef: <T>(v: T) => { value: any };
+  watch: (...args: any[]) => any;
   onMounted: (cb: () => void) => void;
   onBeforeUnmount: (cb: () => void) => void;
-  nextTick: () => Promise<void>;
+  nextTick: (...args: any[]) => Promise<any>;
 };
 
 export type VueAdapterHandle = {
@@ -44,6 +44,7 @@ export type VueAdapterHandle = {
 
 export type VueAdapterProps<Props extends PropsBaseType> = Props &
   PropsBaseType & {
+    class?: string | string[] | Record<string, boolean>;
     hostClass?: string | string[] | Record<string, boolean>;
     hostStyle?: Record<string, string> | string | Array<Record<string, string>>;
     [key: `on${string}`]: unknown;
@@ -66,7 +67,7 @@ export interface VueAdapterOptions<Props extends PropsBaseType> {
 function defaultGetProps<Props extends PropsBaseType>(
   props: VueAdapterProps<Props>
 ): Partial<Props> {
-  const { hostClass, hostStyle, ...rest } = (props ?? {}) as any;
+  const { class: className, hostClass, hostStyle, ...rest } = (props ?? {}) as any;
   const filtered: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(rest)) {
     if (isFrameworkEventProp(key, value)) continue;
@@ -346,7 +347,7 @@ export function createVueAdapter(runtime: VueRuntime) {
 
         runtime.watch(
           () => shouldExist.value,
-          async (val) => {
+          async (val: boolean) => {
             if (val) {
               await runtime.nextTick();
               initSession();
@@ -405,7 +406,7 @@ export function createVueAdapter(runtime: VueRuntime) {
               ref: (el: HTMLElement | null) => {
                 rootRef.value = el;
               },
-              class: mergeHostClass(props.hostClass, hostTokens.value),
+              class: mergeHostClass([props.hostClass, ctx.attrs.class], hostTokens.value),
               style: props.hostStyle,
               'data-demo-ref': ctx.attrs['data-demo-ref'] as string | undefined,
             },
@@ -418,7 +419,7 @@ export function createVueAdapter(runtime: VueRuntime) {
 }
 
 function mergeHostClass(input: unknown, hostTokens: string[]) {
-  const values = [input, hostTokens.join(' ')]
+  const values = [...(Array.isArray(input) ? input : [input]), hostTokens.join(' ')]
     .map((value: any) => value ?? '')
     .filter((value: any) => {
       if (Array.isArray(value)) return value.length > 0;

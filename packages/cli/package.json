@@ -41,6 +41,7 @@
     "prepack": "npm run build"
   },
   "devDependencies": {
+    "@types/node": "^25.6.2",
     "@types/prompts": "^2.4.9"
   }
 }

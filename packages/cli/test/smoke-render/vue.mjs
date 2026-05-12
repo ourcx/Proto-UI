@@ -26,7 +26,7 @@ import { GlobalRegistrator } from '@happy-dom/global-registrator';
 GlobalRegistrator.register();
 
 const Vue = await import('vue');
-const { Button } = await import('./proto-ui/components/vue/index.ts');
+const { ShadcnButton } = await import('./proto-ui/components/vue/index.ts');
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -34,7 +34,7 @@ const container = document.createElement('div');
 document.body.appendChild(container);
 
 const app = Vue.createApp({
-  render: () => Vue.h(Button, null, () => 'click'),
+  render: () => Vue.h(ShadcnButton, { class: 'user-added' }, () => 'click'),
 });
 app.mount(container);
 await flush();
@@ -57,6 +57,9 @@ if (!className.includes('group/button')) {
     'vue smoke: Button host missing prototype tokens (feedback.style did not stamp); host=' +
       host.outerHTML
   );
+}
+if (!className.includes('user-added')) {
+  throw new Error('vue smoke: Button host missing user class; host=' + host.outerHTML);
 }
 if (!host.textContent || !host.textContent.includes('click')) {
   throw new Error('vue smoke: Button host did not render slot text; host=' + host.outerHTML);

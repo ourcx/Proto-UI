@@ -15,11 +15,13 @@ describe('adapter-vue: feedback style', () => {
 
     const mounted = createMountedVueAdapter(proto, {
       hostClass: 'user-a',
+      class: 'user-b',
     });
 
     await flushVue();
 
     expect(mounted.root?.classList.contains('user-a')).toBe(true);
+    expect(mounted.root?.classList.contains('user-b')).toBe(true);
     expect(mounted.root?.classList.contains('opacity-50')).toBe(true);
     expect(mounted.root?.classList.contains('bg-red-500')).toBe(true);
 

@@ -102,8 +102,8 @@ describe('@proto.ui/cli', () => {
 
     expect(reactIndex).toContain(`createReactAdapter`);
     expect(reactIndex).toContain(`shadcnButton`);
-    expect(reactIndex).toContain(`export const Button = adapt(shadcnButton);`);
-    expect(rootIndex).toContain(`export { Button as ReactButton } from './react';`);
+    expect(reactIndex).toContain(`export const ShadcnButton = adapt(shadcnButton);`);
+    expect(rootIndex).toContain(`export { ShadcnButton as ReactShadcnButton } from './react';`);
     expect(config.components.react).toEqual(['shadcn-button']);
   });
 
@@ -130,6 +130,26 @@ describe('@proto.ui/cli', () => {
     expect(wcIndex).toContain(`registerAs: 'proto-ui-base-dialog-root'`);
     expect(rootIndex).toContain(`export { BaseDialogRootElement } from './wc';`);
     expect(config.components.wc).toEqual(['base-dialog']);
+  });
+
+  it('adds a namespaced Web Component facade from shadcn prototypes', async () => {
+    const cwd = await createTempProject('pui-cli-add-wc-shadcn', {
+      name: 'pui-cli-add-wc-shadcn',
+      private: true,
+    });
+
+    expect(runCli(cwd, ['init', '--no-interactive', '--no-styles']).status).toBe(0);
+    const result = runCli(cwd, ['add', 'wc', 'shadcn-button', '--no-install']);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('@proto.ui/adapter-web-component');
+    expect(result.stdout).toContain('@proto.ui/prototypes-shadcn');
+
+    const wcIndex = await fs.readFile(path.join(cwd, 'proto-ui/components/wc/index.ts'), 'utf8');
+    const rootIndex = await fs.readFile(path.join(cwd, 'proto-ui/components/index.ts'), 'utf8');
+
+    expect(wcIndex).toContain(`export const ShadcnButtonElement = AdaptToWebComponent`);
+    expect(rootIndex).toContain(`export { ShadcnButtonElement } from './wc';`);
   });
 
   it('fails fast when the required React runtime is missing', async () => {

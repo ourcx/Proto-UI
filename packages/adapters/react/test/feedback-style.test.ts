@@ -15,9 +15,11 @@ describe('adapter-react: feedback style', () => {
 
     const mounted = createMountedReactAdapter(proto, {
       hostClassName: 'user-a',
+      className: 'user-b',
     });
 
     expect(mounted.root?.classList.contains('user-a')).toBe(true);
+    expect(mounted.root?.classList.contains('user-b')).toBe(true);
     expect(mounted.root?.classList.contains('opacity-50')).toBe(true);
     expect(mounted.root?.classList.contains('bg-red-500')).toBe(true);
 

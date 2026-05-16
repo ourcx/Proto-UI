@@ -39,9 +39,30 @@ const UI_TEXT = {
     blocks: 'Blocks',
     covers: 'Covers',
     consumes: 'Consumes',
+    exercises: 'Exercises',
     expectation: 'Expectation',
     implementationStatus: 'Implementation Status',
     note: 'Note',
+    notes: 'Notes',
+    path: 'Path',
+    required: 'Required',
+    optional: 'Optional',
+    implementationKinds: {
+      fixture: 'Fixture',
+      'module-test': 'Module Test',
+      'adapter-test': 'Adapter Test',
+      'runtime-test': 'Runtime Test',
+      'workspace-check': 'Workspace Check',
+    },
+    implementationStatuses: {
+      missing: 'Missing',
+      planned: 'Planned',
+      active: 'Active',
+      passing: 'Passing',
+      failing: 'Failing',
+      'needs-review': 'Needs Review',
+      skipped: 'Skipped',
+    },
     relationships: 'Relationships',
     relationKinds: {
       relates: 'Relates',
@@ -100,9 +121,30 @@ const UI_TEXT = {
     blocks: '阻塞项',
     covers: '覆盖',
     consumes: '消费',
+    exercises: '演练',
     expectation: '预期',
     implementationStatus: '落点状态',
     note: '备注',
+    notes: '备注',
+    path: '路径',
+    required: '必需',
+    optional: '可选',
+    implementationKinds: {
+      fixture: '共享 Fixture',
+      'module-test': 'Module 测试',
+      'adapter-test': 'Adapter 测试',
+      'runtime-test': 'Runtime 测试',
+      'workspace-check': 'Workspace 校验',
+    },
+    implementationStatuses: {
+      missing: '缺失',
+      planned: '计划中',
+      active: '已启用',
+      passing: '通过',
+      failing: '失败',
+      'needs-review': '待复核',
+      skipped: '跳过',
+    },
     relationships: '实体关系',
     relationKinds: {
       relates: '关联',
@@ -480,18 +522,49 @@ function EntityInspector(props: { entity: SpecEntity | null; locale: Locale; t: 
       {entity.implementations.length > 0 ? (
         <section className="detail-section">
           <h3>{props.t.implementations}</h3>
-          <div className="issue-list compact">
+          <div className="implementation-list">
             {entity.implementations.map((implementation) => (
-              <article className="issue-row" key={implementation.id}>
-                <p className="issue-file">{implementation.id}</p>
-                <p>
-                  {implementation.kind} / {props.t.implementationStatus}: {implementation.status}
-                </p>
-                {implementation.path ? <p>{implementation.path}</p> : null}
-                {implementation.consumesCases.length > 0 ? (
-                  <p className="blocked-items">
-                    {props.t.consumes}: {implementation.consumesCases.join(', ')}
+              <article
+                className={`implementation-card status-${implementation.status}`}
+                key={implementation.id}
+              >
+                <div className="implementation-header">
+                  <strong>{implementation.id}</strong>
+                  <div className="implementation-tags">
+                    <span className="kind-badge">
+                      {props.t.implementationKinds[implementation.kind]}
+                    </span>
+                    <span className={`status-badge status-${implementation.status}`}>
+                      {props.t.implementationStatuses[implementation.status]}
+                    </span>
+                    <span className={implementation.required ? 'required-badge' : 'optional-badge'}>
+                      {implementation.required ? props.t.required : props.t.optional}
+                    </span>
+                  </div>
+                </div>
+                {implementation.path ? (
+                  <p className="implementation-path">
+                    <span>{props.t.path}</span>
+                    <code>{implementation.path}</code>
                   </p>
+                ) : null}
+                <ImplementationChipGroup
+                  label={props.t.consumes}
+                  values={implementation.consumesCases}
+                />
+                <ImplementationChipGroup
+                  label={props.t.exercises}
+                  values={implementation.exercises}
+                />
+                {implementation.notes.length > 0 ? (
+                  <div className="implementation-notes">
+                    <span>{props.t.notes}</span>
+                    <ul>
+                      {implementation.notes.map((note) => (
+                        <li key={note}>{note}</li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : null}
               </article>
             ))}
@@ -509,6 +582,21 @@ function EntityInspector(props: { entity: SpecEntity | null; locale: Locale; t: 
         ))}
       </section>
     </section>
+  );
+}
+
+function ImplementationChipGroup(props: { label: string; values: string[] }) {
+  if (props.values.length === 0) return null;
+
+  return (
+    <div className="implementation-chip-group">
+      <span>{props.label}</span>
+      <div>
+        {props.values.map((value) => (
+          <code key={value}>{value}</code>
+        ))}
+      </div>
+    </div>
   );
 }
 

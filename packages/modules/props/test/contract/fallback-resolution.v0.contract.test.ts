@@ -4,7 +4,7 @@ import { PropsKernel } from '../../src/kernel/kernel';
 
 describe('props: fallback resolution (T-PROPS-0006)', () => {
   it('T-PROPS-0006-CASE-MISSING-FALLBACK / C-PROPS-0009-A: missing input enters fallback chain', () => {
-    const pm = new PropsKernel<{ value: number }>();
+    const pm = new PropsKernel<{ value: number | null }>();
 
     pm.define({
       value: { type: 'number', default: 1 },
@@ -47,7 +47,7 @@ describe('props: fallback resolution (T-PROPS-0006)', () => {
   });
 
   it('T-PROPS-0006-CASE-INVALID-FALLBACK / C-PROPS-0009-D: invalid non-empty input enters fallback chain', () => {
-    const pm = new PropsKernel<{ value: number }>();
+    const pm = new PropsKernel<{ value: number | null }>();
 
     pm.define({
       value: { type: 'number', default: 1, empty: 'accept' },

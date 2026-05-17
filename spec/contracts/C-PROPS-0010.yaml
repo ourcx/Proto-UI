@@ -3,7 +3,7 @@ type: contract
 title: Failed declaration merge must not partially apply
 status: draft
 since: 0.1.0
-summary: Blocking diagnostics during setup-time prop declaration merge should reject the merge transaction without partially applying changes.
+summary: Blocking diagnostics during `setup`-time prop declaration merge should reject the merge transaction without partially applying changes.
 sources:
   - path: internal/contracts/props/base-text/01.define-merge.v0.zh-CN.md
     sections:

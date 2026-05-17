@@ -3,7 +3,7 @@ type: contract
 title: Raw props APIs expose raw input as an escape hatch
 status: draft
 since: 0.1.0
-summary: Raw props APIs may observe undeclared keys and non-normalized values, but remain an escape hatch rather than the preferred props surface.
+summary: '`Raw props` APIs may observe undeclared keys and non-normalized values, but remain an escape hatch rather than the preferred props surface.'
 sources:
   - path: internal/contracts/props/base-text/04.watch-raw.v0.zh-CN.md
     sections:
@@ -23,7 +23,7 @@ refines:
 revisions:
   - version: 0.1.0
     change: introduced
-    summary: Drafted a placeholder for raw props escape-hatch semantics.
+    summary: Drafted a placeholder for `raw props` escape-hatch semantics.
 tags:
   - props
   - raw

@@ -330,6 +330,19 @@ h1 {
   line-height: 1.55;
 }
 
+.summary code,
+.detail-section p code,
+.issue-row p code {
+  border: 1px solid #d7e0db;
+  border-radius: 5px;
+  background: #f1f5f3;
+  color: #1f352b;
+  padding: 1px 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.92em;
+  font-weight: 700;
+}
+
 .criteria-list {
   display: grid;
   gap: 10px;

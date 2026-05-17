@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useMemo, useState } from 'react';
+import { StrictMode, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import {
@@ -362,7 +362,7 @@ function WorkspaceView(props: {
                   onClick={() => props.onSelectEntity(entity.id)}
                 >
                   <strong>{entity.id}</strong>
-                  <span>{entity.title}</span>
+                  <span>{renderInlineText(entity.title)}</span>
                   {entity.openQuestions.length > 0 ? <em>{entity.openQuestions.length}</em> : null}
                 </button>
               ))}
@@ -431,7 +431,7 @@ function EntityInspector(props: { entity: SpecEntity | null; locale: Locale; t: 
     <section className="panel entity-panel">
       <div className="panel-heading">
         <p className="eyebrow">{entity.type}</p>
-        <h2>{entity.title}</h2>
+        <h2>{renderInlineText(entity.title)}</h2>
       </div>
       <dl className="entity-meta">
         <div>
@@ -447,11 +447,11 @@ function EntityInspector(props: { entity: SpecEntity | null; locale: Locale; t: 
           <dd>{entity.since}</dd>
         </div>
       </dl>
-      {entity.summary ? <p className="summary">{entity.summary}</p> : null}
+      {entity.summary ? <p className="summary">{renderInlineText(entity.summary)}</p> : null}
       {entity.statement ? (
         <section className="detail-section">
           <h3>{props.t.statement}</h3>
-          <p>{formatLocalizedText(entity.statement, props.locale)}</p>
+          <p>{renderLocalizedText(entity.statement, props.locale)}</p>
         </section>
       ) : null}
       {entity.criteria.length > 0 ? (
@@ -461,11 +461,11 @@ function EntityInspector(props: { entity: SpecEntity | null; locale: Locale; t: 
             {entity.criteria.map((criterion) => (
               <article className="criterion-row" key={criterion.id}>
                 <strong>{criterion.id}</strong>
-                <p>{formatLocalizedText(criterion.text, props.locale)}</p>
+                <p>{renderLocalizedText(criterion.text, props.locale)}</p>
                 {criterion.rationale ? (
                   <p className="rationale">
                     <span>{props.t.rationale}: </span>
-                    {formatLocalizedText(criterion.rationale, props.locale)}
+                    {renderLocalizedText(criterion.rationale, props.locale)}
                   </p>
                 ) : null}
               </article>
@@ -480,10 +480,10 @@ function EntityInspector(props: { entity: SpecEntity | null; locale: Locale; t: 
             {entity.openQuestions.map((question) => (
               <article className="issue-row" key={question.id}>
                 <p className="issue-file">{question.id}</p>
-                <p>{formatLocalizedText(question.question, props.locale)}</p>
+                <p>{renderLocalizedText(question.question, props.locale)}</p>
                 {question.context ? (
                   <p className="issue-context">
-                    {formatLocalizedText(question.context, props.locale)}
+                    {renderLocalizedText(question.context, props.locale)}
                   </p>
                 ) : null}
                 {question.blocks.length > 0 ? (
@@ -795,7 +795,7 @@ function OpenQuestionsPanel(props: {
                 {entity.id}
               </button>
               <p className="issue-file">{question.id}</p>
-              <p>{formatLocalizedText(question.question, props.locale)}</p>
+              <p>{renderLocalizedText(question.question, props.locale)}</p>
               {question.blocks.length > 0 ? (
                 <p className="blocked-items">
                   {props.t.blocks}: {question.blocks.join(', ')}
@@ -858,6 +858,25 @@ function formatLocalizedText(
   }
 
   return value.en ?? value['zh-CN'] ?? '';
+}
+
+function renderLocalizedText(
+  value: string | { en?: string | undefined; 'zh-CN'?: string | undefined },
+  locale: Locale
+): ReactNode {
+  return renderInlineText(formatLocalizedText(value, locale));
+}
+
+function renderInlineText(value: string): ReactNode {
+  const parts = value.split(/(`[^`]+`)/g);
+
+  return parts.map((part, index) => {
+    if (part.startsWith('`') && part.endsWith('`') && part.length > 2) {
+      return <code key={index}>{part.slice(1, -1)}</code>;
+    }
+
+    return part;
+  });
 }
 
 function createGraphLayout(graph: SpecGraph): Map<string, { x: number; y: number }> {

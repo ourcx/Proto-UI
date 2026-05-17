@@ -1,9 +1,9 @@
 id: C-PROPS-0013
 type: contract
-title: Props watcher callbacks receive run handle bound to current props state
+title: Props watcher callbacks receive `run handle` bound to current props state
 status: draft
 since: 0.1.0
-summary: Props watcher callbacks should receive a run handle whose props APIs observe the current watcher invocation state.
+summary: Props watcher callbacks should receive a `run handle` whose props APIs observe the current watcher invocation state.
 sources:
   - path: internal/contracts/props/base-text/05.runtime-integration.v0.zh-CN.md
     sections:
@@ -15,7 +15,7 @@ dependsOn:
 revisions:
   - version: 0.1.0
     change: introduced
-    summary: Drafted a placeholder for runtime run-handle binding pending runtime boundary review.
+    summary: Drafted a placeholder for `runtime` `run handle` binding pending runtime boundary review.
 tags:
   - props
   - runtime

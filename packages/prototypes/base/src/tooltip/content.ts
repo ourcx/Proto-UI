@@ -24,9 +24,13 @@ function setupTooltipContent(def: DefHandle<TooltipContentProps, TooltipContentE
 
   def.expose.state('open', open);
 
+  const deriveOpen = (ctx: { triggerHovered: boolean; triggerFocused: boolean }) =>
+    ctx.triggerHovered || ctx.triggerFocused;
+
   def.context.subscribe(TOOLTIP_CONTEXT, (_run, next) => {
-    open.set(next.open, 'reason: tooltip context sync => content open');
-    if (next.open) {
+    const nextOpen = deriveOpen(next);
+    open.set(nextOpen, 'reason: tooltip context sync => content open');
+    if (nextOpen) {
       overlay.openOverlay('trigger.hover');
     } else {
       overlay.close('controlled.sync');
@@ -35,8 +39,9 @@ function setupTooltipContent(def: DefHandle<TooltipContentProps, TooltipContentE
 
   def.lifecycle.onMounted((run) => {
     const ctx = run.context.read(TOOLTIP_CONTEXT);
-    open.set(ctx.open, 'reason: lifecycle.onMounted => tooltip content open sync');
-    if (ctx.open) {
+    const nextOpen = deriveOpen(ctx);
+    open.set(nextOpen, 'reason: lifecycle.onMounted => tooltip content open sync');
+    if (nextOpen) {
       overlay.openOverlay('trigger.hover');
     } else {
       overlay.close('controlled.sync');

@@ -58,6 +58,10 @@
       scale(var(--pui-scale-x, 1), var(--pui-scale-y, 1));
   }
 
+  :where([data-pui-style~='aria-checked:bg-accent'])[aria-checked='true'] {
+    background-color: var(--pui-accent);
+  }
+
   :where([data-pui-style~='aria-checked:bg-muted'])[aria-checked='true'] {
     background-color: var(--pui-muted);
   }
@@ -72,6 +76,14 @@
 
   :where([data-pui-style~='aria-checked:pr-0.5'])[aria-checked='true'] {
     padding-right: 0.125rem;
+  }
+
+  :where([data-pui-style~='aria-checked:text-accent-foreground'])[aria-checked='true'] {
+    color: var(--pui-accent-foreground);
+  }
+
+  :where([data-pui-style~='aria-checked:text-muted-foreground'])[aria-checked='true'] {
+    color: var(--pui-muted-foreground);
   }
 
   :where([data-pui-style~='aria-checked:text-primary-foreground'])[aria-checked='true'] {
@@ -130,6 +142,10 @@
     backdrop-filter: blur(4px);
   }
 
+  :where([data-pui-style~='bg-accent']) {
+    background-color: var(--pui-accent);
+  }
+
   :where([data-pui-style~='bg-background']) {
     background-color: var(--pui-background);
   }
@@ -176,6 +192,10 @@
 
   :where([data-pui-style~='bg-muted']) {
     background-color: var(--pui-muted);
+  }
+
+  :where([data-pui-style~='bg-muted/60']) {
+    background-color: color-mix(in oklab, var(--pui-muted) 60%, transparent);
   }
 
   :where([data-pui-style~='bg-muted/80']) {
@@ -607,6 +627,10 @@
     min-height: 7rem;
   }
 
+  :where([data-pui-style~='min-w-10']) {
+    min-width: 2.5rem;
+  }
+
   :where([data-pui-style~='min-w-56']) {
     min-width: 14rem;
   }
@@ -682,6 +706,10 @@
 
   :where([data-pui-style~='px-3']) {
     padding-inline: 0.75rem;
+  }
+
+  :where([data-pui-style~='px-5']) {
+    padding-inline: 1.25rem;
   }
 
   :where([data-pui-style~='py-1.5']) {
@@ -814,6 +842,10 @@
 
   :where([data-pui-style~='text-[0.8rem]']) {
     font-size: 0.8rem;
+  }
+
+  :where([data-pui-style~='text-accent-foreground']) {
+    color: var(--pui-accent-foreground);
   }
 
   :where([data-pui-style~='text-destructive']) {

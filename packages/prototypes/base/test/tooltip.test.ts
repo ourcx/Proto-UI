@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { styleContains } from '../../test-utils/style';
 import { AdaptToWebComponent } from '@proto.ui/adapter-web-component';
 import { tooltipContent, tooltipRoot, tooltipTrigger } from '../src/tooltip';
 
@@ -22,25 +21,21 @@ describe('prototypes/base: tooltip', () => {
 
     // 初始是关闭的
     expect(root.getExposes().open.get()).toBe(false);
-    expect(styleContains(content, 'hidden')).toBe(true);
+    expect(content.getExposes().open.get()).toBe(false);
 
     // hover trigger → 打开
     trigger.dispatchEvent(new Event('pointerenter'));
     await Promise.resolve();
-    await Promise.resolve();
-    await Promise.resolve();
-    await Promise.resolve();
 
     expect(root.getExposes().open.get()).toBe(true);
     expect(content.getExposes().open.get()).toBe(true);
-    expect(styleContains(content, 'hidden')).toBe(false);
 
-    // 离开 trigger → 关闭（不像 hover-card 会因为 content hover 保持）
+    // 离开 trigger → 关闭
     trigger.dispatchEvent(new Event('pointerleave'));
     await Promise.resolve();
 
     expect(root.getExposes().open.get()).toBe(false);
-    expect(styleContains(content, 'hidden')).toBe(true);
+    expect(content.getExposes().open.get()).toBe(false);
 
     root.remove();
     await Promise.resolve();
@@ -63,14 +58,14 @@ describe('prototypes/base: tooltip', () => {
     await Promise.resolve();
 
     expect(root.getExposes().open.get()).toBe(true);
-    expect(styleContains(content, 'hidden')).toBe(false);
+    expect(content.getExposes().open.get()).toBe(true);
 
     // blur trigger → 关闭
     trigger.dispatchEvent(new Event('blur'));
     await Promise.resolve();
 
     expect(root.getExposes().open.get()).toBe(false);
-    expect(styleContains(content, 'hidden')).toBe(true);
+    expect(content.getExposes().open.get()).toBe(false);
 
     root.remove();
     await Promise.resolve();
